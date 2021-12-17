@@ -43,7 +43,7 @@ public class ObfPlugin implements Plugin<Project> {
                         DefaultFilePropertyFactory.DefaultDirectoryVar defaultDirectoryVar = dexMergingTask.outputDir
                         finalFile = defaultDirectoryVar.asFile.get()
                     } else {
-                        throw new RuntimeException("BlackObfuscator not support the gradle version")
+                        throw new RuntimeException("BlackObfuscator not support the gradle version!")
                     }
                     ObfDex.obf(finalFile.getAbsolutePath(),
                             sObfuscatorExtension.depth, sObfuscatorExtension.obfClass)
@@ -62,7 +62,7 @@ public class ObfPlugin implements Plugin<Project> {
                         DefaultFilePropertyFactory.DefaultDirectoryVar defaultDirectoryVar = dexMergingTask.outputDir
                         finalFile = defaultDirectoryVar.asFile.get()
                     } else {
-                        throw new RuntimeException("BlackObfuscator not support the gradle version")
+                        throw new RuntimeException("BlackObfuscator not support the gradle version!")
                     }
                     ObfDex.obf(finalFile.getAbsolutePath(),
                             sObfuscatorExtension.depth, sObfuscatorExtension.obfClass)
