@@ -1,9 +1,14 @@
 package top.niunaijun.blackobfuscator
 
+import com.android.build.gradle.internal.tasks.DexMergingTask
+import org.gradle.api.Action
 import org.gradle.api.Plugin
 import org.gradle.api.Project
 
 import com.android.build.gradle.AppExtension
+import org.gradle.api.Task
+import org.gradle.api.internal.file.DefaultFilePropertyFactory
+import top.niunaijun.blackobfuscator.core.ObfDex
 
 public class ObfPlugin implements Plugin<Project> {
     private String PLUGIN_NAME = "BlackObfuscator"
@@ -22,8 +27,31 @@ public class ObfPlugin implements Plugin<Project> {
             System.out.println("=========================")
         }
 
+        project.afterEvaluate { ->
+            project.tasks.getByName("mergeDexRelease").doLast(new Action<Task>() {
+                @Override
+                void execute(Task task) {
+                    DexMergingTask dexMergingTask = task
+                    DefaultFilePropertyFactory.DefaultDirectoryVar defaultDirectoryVar = dexMergingTask.outputDir
+                    ObfDex.obf(defaultDirectoryVar.asFile.get().getAbsolutePath(),
+                            sObfuscatorExtension.depth, sObfuscatorExtension.obfClass)
+                }
+            })
+
+            project.tasks.getByName("mergeProjectDexDebug").doLast(new Action<Task>() {
+                @Override
+                void execute(Task task) {
+                    DexMergingTask dexMergingTask = task
+                    DefaultFilePropertyFactory.DefaultDirectoryVar defaultDirectoryVar = dexMergingTask.outputDir
+                    ObfDex.obf(defaultDirectoryVar.asFile.get().getAbsolutePath(),
+                            sObfuscatorExtension.depth, sObfuscatorExtension.obfClass)
+                }
+            })
+        }
         //注册一个Transform
-        def classTransform = new ObfTransform(project)
-        android.registerTransform(classTransform)
+//        def classTransform = new ObfTransform(project)
+//        android.registerTransform(classTransform)
     }
+
+
 }
