@@ -1,6 +1,6 @@
 plugins {
     id 'com.android.application'
-    id 'top.niunaijun.blackobfuscator'
+//    id 'top.niunaijun.blackobfuscator'
 }
 
 android {
@@ -29,10 +29,10 @@ android {
     }
 }
 
-BlackObfuscator {
-    enabled true
-    obfClass = ["MainActivity", "com.bbb"]
-}
+//BlackObfuscator {
+//    enabled true
+//    obfClass = ["MainActivity", "com.bbb"]
+//}
 
 dependencies {
 
