@@ -32,8 +32,17 @@ public class ObfPlugin implements Plugin<Project> {
                 @Override
                 void execute(Task task) {
                     DexMergingTask dexMergingTask = task
-                    DefaultFilePropertyFactory.DefaultDirectoryVar defaultDirectoryVar = dexMergingTask.outputDir
-                    ObfDex.obf(defaultDirectoryVar.asFile.get().getAbsolutePath(),
+                    def file = dexMergingTask.outputDir
+                    File finalFile
+                    if (file instanceof File) {
+                        finalFile = file
+                    } else if (file instanceof DefaultFilePropertyFactory.DefaultDirectoryVar) {
+                        DefaultFilePropertyFactory.DefaultDirectoryVar defaultDirectoryVar = dexMergingTask.outputDir
+                        finalFile = defaultDirectoryVar.asFile.get()
+                    } else {
+                        throw new RuntimeException("BlackObfuscator not support the gradle version")
+                    }
+                    ObfDex.obf(finalFile.getAbsolutePath(),
                             sObfuscatorExtension.depth, sObfuscatorExtension.obfClass)
                 }
             })
@@ -42,8 +51,17 @@ public class ObfPlugin implements Plugin<Project> {
                 @Override
                 void execute(Task task) {
                     DexMergingTask dexMergingTask = task
-                    DefaultFilePropertyFactory.DefaultDirectoryVar defaultDirectoryVar = dexMergingTask.outputDir
-                    ObfDex.obf(defaultDirectoryVar.asFile.get().getAbsolutePath(),
+                    def file = dexMergingTask.outputDir
+                    File finalFile
+                    if (file instanceof File) {
+                        finalFile = file
+                    } else if (file instanceof DefaultFilePropertyFactory.DefaultDirectoryVar) {
+                        DefaultFilePropertyFactory.DefaultDirectoryVar defaultDirectoryVar = dexMergingTask.outputDir
+                        finalFile = defaultDirectoryVar.asFile.get()
+                    } else {
+                        throw new RuntimeException("BlackObfuscator not support the gradle version")
+                    }
+                    ObfDex.obf(finalFile.getAbsolutePath(),
                             sObfuscatorExtension.depth, sObfuscatorExtension.obfClass)
                 }
             })
