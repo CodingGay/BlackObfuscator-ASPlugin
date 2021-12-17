@@ -1,0 +1,3 @@
+rootProject.name = "BlackObfuscator-ASPlugin"
+include ':app'
+include ':plugin'
