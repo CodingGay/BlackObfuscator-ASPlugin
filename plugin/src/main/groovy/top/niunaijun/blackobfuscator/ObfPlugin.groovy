@@ -28,6 +28,9 @@ public class ObfPlugin implements Plugin<Project> {
         }
 
         project.afterEvaluate { ->
+            if (!sObfuscatorExtension.enabled) {
+                return
+            }
             project.tasks.getByName("mergeDexRelease").doLast(new Action<Task>() {
                 @Override
                 void execute(Task task) {
