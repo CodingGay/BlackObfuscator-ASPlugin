@@ -6,7 +6,7 @@
 
 ## 注意事项
 - 首要注意：[BlackObfuscator](https://github.com/CodingGay/BlackObfuscator) 内的注意事项
-- 若打包报错请提供classpath中gradle的版本供我测试
+- 若打包报错或者无效请提供classpath中gradle的版本供我测试
 
 ## 使用方式
 
