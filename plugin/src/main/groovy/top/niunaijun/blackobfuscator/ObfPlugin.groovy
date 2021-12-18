@@ -1,6 +1,7 @@
 package top.niunaijun.blackobfuscator
 
 import com.android.build.gradle.AppExtension
+import com.android.build.gradle.internal.dsl.ProductFlavor
 import com.android.build.gradle.internal.tasks.DexMergingTask
 import org.gradle.api.*
 import org.gradle.api.internal.file.DefaultFilePropertyFactory
@@ -9,13 +10,13 @@ import top.niunaijun.blackobfuscator.core.ObfDex
 public class ObfPlugin implements Plugin<Project> {
     private String PLUGIN_NAME = "BlackObfuscator"
     private Project mProject
-    public static top.niunaijun.blackobfuscator.BlackObfuscatorExtension sObfuscatorExtension
+    public static BlackObfuscatorExtension sObfuscatorExtension
 
     void apply(Project project) {
         this.mProject = project
         def android = project.extensions.findByType(AppExtension)
         project.configurations.create(PLUGIN_NAME).extendsFrom(project.configurations.compile)
-        sObfuscatorExtension = project.extensions.create(PLUGIN_NAME, top.niunaijun.blackobfuscator.BlackObfuscatorExtension, project)
+        sObfuscatorExtension = project.extensions.create(PLUGIN_NAME, BlackObfuscatorExtension, project)
 
         project.afterEvaluate {
             System.out.println("=====BlackObfuscator=====")
@@ -55,9 +56,9 @@ public class ObfPlugin implements Plugin<Project> {
             addTask("transformDexArchiveWithDexMergerForRelease", tasks2)
 
             if (android != null) {
-                android.productFlavors.all(new Action<com.android.build.gradle.internal.dsl.ProductFlavor>() {
+                android.productFlavors.all(new Action<ProductFlavor>() {
                     @Override
-                    void execute(com.android.build.gradle.internal.dsl.ProductFlavor productFlavor) {
+                    void execute(ProductFlavor productFlavor) {
                         def name = upperCaseFirst(productFlavor.name)
                         def names = [productFlavor.name, name]
                         for (String p : names) {
