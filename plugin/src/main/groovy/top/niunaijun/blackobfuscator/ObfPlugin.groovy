@@ -15,7 +15,7 @@ public class ObfPlugin implements Plugin<Project> {
     void apply(Project project) {
         this.mProject = project
         def android = project.extensions.findByType(AppExtension)
-        project.configurations.create(PLUGIN_NAME).extendsFrom(project.configurations.compile)
+        project.configurations.create(PLUGIN_NAME).extendsFrom(project.configurations.implementation)
         sObfuscatorExtension = project.extensions.create(PLUGIN_NAME, BlackObfuscatorExtension, project)
 
         project.afterEvaluate {
