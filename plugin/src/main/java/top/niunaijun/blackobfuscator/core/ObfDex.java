@@ -20,45 +20,59 @@ import top.niunaijun.obfuscator.ObfuscatorConfiguration;
  */
 public class ObfDex {
     public static void obf(String dir, int depth, String[] obfClass) {
-        File tempJar = null;
-        File splitDex = null;
-        File obfDex = null;
         File file = new File(dir);
         if (file.isDirectory()) {
             File[] files = file.listFiles();
             if (files == null)
                 return;
             for (File input : files) {
-                if (!input.getAbsolutePath().endsWith(".dex"))
-                    return;
-                try {
-                    tempJar = new File(input.getParent(), System.currentTimeMillis() + "obf.jar");
-                    splitDex = new File(input.getParent(), System.currentTimeMillis() + "split.dex");
-                    obfDex = new File(input.getParent(), System.currentTimeMillis() + "obf.dex");
-                    long l = DexLib2Utils.splitDex(input, splitDex, Arrays.asList(obfClass));
-                    if (l <= 0) {
-                        System.out.println("No classes found");
-                        return;
-                    }
-
-                    new Dex2jarCmd(new ObfuscatorConfiguration() {
-                        @Override
-                        protected int getObfDepth() {
-                            return depth;
-                        }
-
-                    }).doMain("-f", splitDex.getAbsolutePath(), "-o", tempJar.getAbsolutePath());
-                    new Jar2Dex().doMain("-f", "-o", obfDex.getAbsolutePath(), tempJar.getAbsolutePath());
-                    DexLib2Utils.mergerAndCoverDexFile(input, obfDex, input);
-                } catch (Throwable t) {
-                    t.printStackTrace();
-                } finally {
-                    tempJar.delete();
-                    splitDex.delete();
-                    obfDex.delete();
+                if (input.isFile()) {
+                    handleDex(input, depth, obfClass);
+                } else {
+                    obf(input.getAbsolutePath(), depth, obfClass);
                 }
             }
+        } else {
+            handleDex(file, depth, obfClass);
         }
+    }
 
+    private static void handleDex(File input, int depth, String[] obfClass) {
+        if (!input.getAbsolutePath().endsWith(".dex"))
+            return;
+        File tempJar = null;
+        File splitDex = null;
+        File obfDex = null;
+        try {
+            tempJar = new File(input.getParent(), System.currentTimeMillis() + "obf" + input.getName() + ".jar");
+            splitDex = new File(input.getParent(), System.currentTimeMillis() + "split" + input.getName() + ".dex");
+            obfDex = new File(input.getParent(), System.currentTimeMillis() + "obf" + input.getName() + ".dex");
+            long l = DexLib2Utils.splitDex(input, splitDex, Arrays.asList(obfClass));
+            if (l <= 0) {
+                System.out.println("Obfuscator Class not found");
+                return;
+            }
+
+            new Dex2jarCmd(new ObfuscatorConfiguration() {
+                @Override
+                protected int getObfDepth() {
+                    return depth;
+                }
+
+                @Override
+                protected boolean accept(String className, String methodName) {
+                    System.out.println("BlackObf Class: " + className);
+                    return super.accept(className, methodName);
+                }
+            }).doMain("-f", splitDex.getAbsolutePath(), "-o", tempJar.getAbsolutePath());
+            new Jar2Dex().doMain("-f", "-o", obfDex.getAbsolutePath(), tempJar.getAbsolutePath());
+            DexLib2Utils.mergerAndCoverDexFile(input, obfDex, input);
+        } catch (Throwable t) {
+            t.printStackTrace();
+        } finally {
+            tempJar.delete();
+            splitDex.delete();
+            obfDex.delete();
+        }
     }
 }

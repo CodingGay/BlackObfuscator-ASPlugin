@@ -52,24 +52,50 @@ public class ObfPlugin implements Plugin<Project> {
                 }
             }
             List<Task> tasks = new ArrayList<>()
+            List<Task> tasks2 = new ArrayList<>()
             addTask("mergeDexRelease", tasks)
             addTask("mergeProjectDexDebug", tasks)
+
+            addTask("transformDexArchiveWithDexMergerForDebug", tasks2)
+            addTask("transformDexArchiveWithDexMergerForRelease", tasks2)
+
             android.productFlavors.all(new Action<com.android.build.gradle.internal.dsl.ProductFlavor>() {
                 @Override
                 void execute(com.android.build.gradle.internal.dsl.ProductFlavor productFlavor) {
                     addTask("mergeProjectDex${productFlavor.name}Debug", tasks)
                     addTask("mergeDex${productFlavor.name}Release", tasks)
+
+                    addTask("transformDexArchiveWithDexMergerFor${productFlavor.name}Debug", tasks2)
+                    addTask("transformDexArchiveWithDexMergerFor${productFlavor.name}Release", tasks2)
                 }
             })
             for (Task task : tasks) {
                 task.doLast(action)
+            }
+
+            def action2 = new Action<Task>() {
+                @Override
+                void execute(Task task) {
+                    task.getOutputs().getFiles().collect().each() { element ->
+                        def file = new File(element.toString())
+                        ObfDex.obf(file.getAbsolutePath(),
+                                sObfuscatorExtension.depth, sObfuscatorExtension.obfClass)
+                    }
+                }
+            }
+            for (Task task : tasks2) {
+                task.doLast(action2)
+            }
+
+            if (tasks2.isEmpty() && tasks.isEmpty()) {
+                throw new RuntimeException("This gradle version is not applicable. Please submit issues in https://github.com/CodingGay/BlackObfuscator-ASPlugin")
             }
         }
     }
 
     private void addTask(String name, List<Task> tasks) {
         try {
-            System.out.println("add Task $name")
+            println("add Task $name")
             //Protected code
             tasks.add(mProject.tasks.getByName(name))
         } catch(UnknownTaskException e1) {
