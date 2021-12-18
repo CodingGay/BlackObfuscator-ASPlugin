@@ -19,7 +19,7 @@ public class ObfPlugin implements Plugin<Project> {
 
     void apply(Project project) {
         this.mProject = project
-        def android = project.extensions.getByType(AppExtension)
+        def android = project.extensions.findByType(AppExtension)
         project.configurations.create(PLUGIN_NAME).extendsFrom(project.configurations.compile)
         sObfuscatorExtension = project.extensions.create(PLUGIN_NAME, BlackObfuscatorExtension, project)
 
@@ -59,16 +59,19 @@ public class ObfPlugin implements Plugin<Project> {
             addTask("transformDexArchiveWithDexMergerForDebug", tasks2)
             addTask("transformDexArchiveWithDexMergerForRelease", tasks2)
 
-            android.productFlavors.all(new Action<com.android.build.gradle.internal.dsl.ProductFlavor>() {
-                @Override
-                void execute(com.android.build.gradle.internal.dsl.ProductFlavor productFlavor) {
-                    addTask("mergeProjectDex${productFlavor.name}Debug", tasks)
-                    addTask("mergeDex${productFlavor.name}Release", tasks)
+            if (android != null) {
+                android.productFlavors.all(new Action<com.android.build.gradle.internal.dsl.ProductFlavor>() {
+                    @Override
+                    void execute(com.android.build.gradle.internal.dsl.ProductFlavor productFlavor) {
+                        addTask("mergeProjectDex${productFlavor.name}Debug", tasks)
+                        addTask("mergeDex${productFlavor.name}Release", tasks)
 
-                    addTask("transformDexArchiveWithDexMergerFor${productFlavor.name}Debug", tasks2)
-                    addTask("transformDexArchiveWithDexMergerFor${productFlavor.name}Release", tasks2)
-                }
-            })
+                        addTask("transformDexArchiveWithDexMergerFor${productFlavor.name}Debug", tasks2)
+                        addTask("transformDexArchiveWithDexMergerFor${productFlavor.name}Release", tasks2)
+                    }
+                })
+            }
+
             for (Task task : tasks) {
                 task.doLast(action)
             }
