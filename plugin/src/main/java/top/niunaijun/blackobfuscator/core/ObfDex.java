@@ -61,7 +61,7 @@ public class ObfDex {
 
                 @Override
                 protected boolean accept(String className, String methodName) {
-                    System.out.println("BlackObf Class: " + className);
+                    System.out.println("BlackObf Class: " + className + "#" + methodName);
                     return super.accept(className, methodName);
                 }
             }).doMain("-f", splitDex.getAbsolutePath(), "-o", tempJar.getAbsolutePath());

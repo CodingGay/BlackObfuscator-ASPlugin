@@ -87,9 +87,9 @@ public class ObfPlugin implements Plugin<Project> {
                 task.doLast(action2)
             }
 
-            if (tasks2.isEmpty() && tasks.isEmpty()) {
-                throw new RuntimeException("This gradle version is not applicable. Please submit issues in https://github.com/CodingGay/BlackObfuscator-ASPlugin")
-            }
+//            if (tasks2.isEmpty() && tasks.isEmpty()) {
+//                throw new RuntimeException("This gradle version is not applicable. Please submit issues in https://github.com/CodingGay/BlackObfuscator-ASPlugin")
+//            }
         }
     }
 
