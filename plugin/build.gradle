@@ -11,7 +11,7 @@ dependencies {
     implementation gradleApi()
     //groovy sdk
     implementation localGroovy()
-    implementation "com.github.CodingGay.BlackObfuscator:dex-tools:1.3"
+    implementation "com.github.CodingGay.BlackObfuscator:dex-tools:1.4"
 }
 
 repositories {
