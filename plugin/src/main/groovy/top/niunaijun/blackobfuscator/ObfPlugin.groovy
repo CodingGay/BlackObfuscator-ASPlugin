@@ -31,29 +31,20 @@ public class ObfPlugin implements Plugin<Project> {
             def action = new Action<Task>() {
                 @Override
                 void execute(Task task) {
-                    DexMergingTask dexMergingTask = task
-                    def file = dexMergingTask.outputDir
-                    File finalFile
-                    if (file instanceof File) {
-                        finalFile = file
-                    } else if (file instanceof DefaultFilePropertyFactory.DefaultDirectoryVar) {
-                        DefaultFilePropertyFactory.DefaultDirectoryVar defaultDirectoryVar = dexMergingTask.outputDir
-                        finalFile = defaultDirectoryVar.asFile.get()
-                    } else {
-                        throw new RuntimeException("BlackObfuscator not support the gradle version!")
+                    task.getOutputs().getFiles().collect().each() { element ->
+                        def file = new File(element.toString())
+                        ObfDex.obf(file.getAbsolutePath(),
+                                sObfuscatorExtension.depth, sObfuscatorExtension.obfClass)
                     }
-                    ObfDex.obf(finalFile.getAbsolutePath(),
-                            sObfuscatorExtension.depth, sObfuscatorExtension.obfClass)
                 }
             }
             List<Task> tasks = new ArrayList<>()
-            List<Task> tasks2 = new ArrayList<>()
             addTask("mergeDexRelease", tasks)
             addTask("mergeLibDexDebug", tasks)
             addTask("mergeProjectDexDebug", tasks)
-
-            addTask("transformDexArchiveWithDexMergerForDebug", tasks2)
-            addTask("transformDexArchiveWithDexMergerForRelease", tasks2)
+            addTask("transformDexArchiveWithDexMergerForDebug", tasks)
+            addTask("transformDexArchiveWithDexMergerForRelease", tasks)
+            addTask("minifyReleaseWithR8", tasks)
 
             if (android != null) {
                 android.productFlavors.all(new Action<ProductFlavor>() {
@@ -66,8 +57,10 @@ public class ObfPlugin implements Plugin<Project> {
                             addTask("mergeLibDex${p}Debug", tasks)
                             addTask("mergeProjectDex${p}Debug", tasks)
 
-                            addTask("transformDexArchiveWithDexMergerFor${p}Debug", tasks2)
-                            addTask("transformDexArchiveWithDexMergerFor${p}Release", tasks2)
+                            addTask("transformDexArchiveWithDexMergerFor${p}Debug", tasks)
+                            addTask("transformDexArchiveWithDexMergerFor${p}Release", tasks)
+
+                            addTask("minify${p}ReleaseWithR8", tasks)
                         }
                     }
                 })
@@ -76,22 +69,7 @@ public class ObfPlugin implements Plugin<Project> {
             for (Task task : tasks) {
                 task.doLast(action)
             }
-
-            def action2 = new Action<Task>() {
-                @Override
-                void execute(Task task) {
-                    task.getOutputs().getFiles().collect().each() { element ->
-                        def file = new File(element.toString())
-                        ObfDex.obf(file.getAbsolutePath(),
-                                sObfuscatorExtension.depth, sObfuscatorExtension.obfClass)
-                    }
-                }
-            }
-            for (Task task : tasks2) {
-                task.doLast(action2)
-            }
-
-            if (tasks2.isEmpty() && tasks.isEmpty()) {
+            if (tasks.isEmpty()) {
                 System.err.println("This gradle version is not applicable. Please submit issues in https://github.com/CodingGay/BlackObfuscator-ASPlugin")
             }
         }
