@@ -1,27 +1,21 @@
 package top.niunaijun.blackobfuscator
 
-import com.android.build.gradle.internal.tasks.DexMergingTask
-import com.android.builder.model.ProductFlavor
-import org.gradle.api.Action
-import org.gradle.api.Plugin
-import org.gradle.api.Project
-
 import com.android.build.gradle.AppExtension
-import org.gradle.api.Task
-import org.gradle.api.UnknownTaskException
+import com.android.build.gradle.internal.tasks.DexMergingTask
+import org.gradle.api.*
 import org.gradle.api.internal.file.DefaultFilePropertyFactory
 import top.niunaijun.blackobfuscator.core.ObfDex
 
 public class ObfPlugin implements Plugin<Project> {
     private String PLUGIN_NAME = "BlackObfuscator"
     private Project mProject
-    public static BlackObfuscatorExtension sObfuscatorExtension
+    public static top.niunaijun.blackobfuscator.BlackObfuscatorExtension sObfuscatorExtension
 
     void apply(Project project) {
         this.mProject = project
         def android = project.extensions.findByType(AppExtension)
         project.configurations.create(PLUGIN_NAME).extendsFrom(project.configurations.compile)
-        sObfuscatorExtension = project.extensions.create(PLUGIN_NAME, BlackObfuscatorExtension, project)
+        sObfuscatorExtension = project.extensions.create(PLUGIN_NAME, top.niunaijun.blackobfuscator.BlackObfuscatorExtension, project)
 
         project.afterEvaluate {
             System.out.println("=====BlackObfuscator=====")
@@ -54,6 +48,7 @@ public class ObfPlugin implements Plugin<Project> {
             List<Task> tasks = new ArrayList<>()
             List<Task> tasks2 = new ArrayList<>()
             addTask("mergeDexRelease", tasks)
+            addTask("mergeLibDexDebug", tasks)
             addTask("mergeProjectDexDebug", tasks)
 
             addTask("transformDexArchiveWithDexMergerForDebug", tasks2)
@@ -67,6 +62,7 @@ public class ObfPlugin implements Plugin<Project> {
                         def names = [productFlavor.name, name]
                         for (String p : names) {
                             addTask("mergeDex${p}Release", tasks)
+                            addTask("mergeLibDex${p}Debug", tasks)
                             addTask("mergeProjectDex${p}Debug", tasks)
 
                             addTask("transformDexArchiveWithDexMergerFor${p}Debug", tasks2)
