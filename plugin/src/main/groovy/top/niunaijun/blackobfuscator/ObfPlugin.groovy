@@ -54,6 +54,7 @@ public class ObfPlugin implements Plugin<Project> {
             List<Task> tasks = new ArrayList<>()
             List<Task> tasks2 = new ArrayList<>()
             addTask("mergeDexRelease", tasks)
+            addTask("mergeLibDexRelease", tasks)
             addTask("mergeProjectDexDebug", tasks)
 
             addTask("transformDexArchiveWithDexMergerForDebug", tasks2)
@@ -63,11 +64,16 @@ public class ObfPlugin implements Plugin<Project> {
                 android.productFlavors.all(new Action<com.android.build.gradle.internal.dsl.ProductFlavor>() {
                     @Override
                     void execute(com.android.build.gradle.internal.dsl.ProductFlavor productFlavor) {
-                        addTask("mergeProjectDex${productFlavor.name}Debug", tasks)
-                        addTask("mergeDex${productFlavor.name}Release", tasks)
+                        def name = upperCaseFirst(productFlavor.name)
+                        def names = [productFlavor.name, name]
+                        for (String p : names) {
+                            addTask("mergeDex${p}Release", tasks)
+                            addTask("mergeLibDex${p}Release", tasks)
+                            addTask("mergeProjectDex${p}Debug", tasks)
 
-                        addTask("transformDexArchiveWithDexMergerFor${productFlavor.name}Debug", tasks2)
-                        addTask("transformDexArchiveWithDexMergerFor${productFlavor.name}Release", tasks2)
+                            addTask("transformDexArchiveWithDexMergerFor${p}Debug", tasks2)
+                            addTask("transformDexArchiveWithDexMergerFor${p}Release", tasks2)
+                        }
                     }
                 })
             }
@@ -90,17 +96,23 @@ public class ObfPlugin implements Plugin<Project> {
                 task.doLast(action2)
             }
 
-//            if (tasks2.isEmpty() && tasks.isEmpty()) {
-//                throw new RuntimeException("This gradle version is not applicable. Please submit issues in https://github.com/CodingGay/BlackObfuscator-ASPlugin")
-//            }
+            if (tasks2.isEmpty() && tasks.isEmpty()) {
+                System.err.println("This gradle version is not applicable. Please submit issues in https://github.com/CodingGay/BlackObfuscator-ASPlugin")
+            }
         }
+    }
+
+    private String upperCaseFirst(String val) {
+        char[] arr = val.toCharArray();
+        arr[0] = Character.toUpperCase(arr[0]);
+        return new String(arr);
     }
 
     private void addTask(String name, List<Task> tasks) {
         try {
-            println("add Task $name")
             //Protected code
             tasks.add(mProject.tasks.getByName(name))
+            println("add Task $name")
         } catch(UnknownTaskException e1) {
             //Catch block
         }
