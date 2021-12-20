@@ -16,14 +16,12 @@
 ```gradle
 repositories {
     ...
+    // 加入仓库
     maven { url 'https://jitpack.io' }
 }
-```
-加入classpath
-```gradle
 dependencies {
     ...
-    classpath "com.github.CodingGay:BlackObfuscator-ASPlugin:2.8"
+    classpath "com.github.CodingGay:BlackObfuscator-ASPlugin:2.9"
 }
 ```
 #### Step 2. app模块加入plugin
