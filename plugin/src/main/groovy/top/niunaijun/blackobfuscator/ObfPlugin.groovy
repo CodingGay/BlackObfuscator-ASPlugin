@@ -45,6 +45,7 @@ public class ObfPlugin implements Plugin<Project> {
             addTask("transformDexArchiveWithDexMergerForDebug", tasks)
             addTask("transformDexArchiveWithDexMergerForRelease", tasks)
             addTask("minifyReleaseWithR8", tasks)
+            addTask("minifyDebugWithR8", tasks)
 
             if (android != null) {
                 android.productFlavors.all(new Action<ProductFlavor>() {
@@ -61,6 +62,7 @@ public class ObfPlugin implements Plugin<Project> {
                             addTask("transformDexArchiveWithDexMergerFor${p}Release", tasks)
 
                             addTask("minify${p}ReleaseWithR8", tasks)
+                            addTask("minify${p}DebugWithR8", tasks)
                         }
                     }
                 })
