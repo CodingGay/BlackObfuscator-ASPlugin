@@ -55,12 +55,12 @@ public class ObfDex {
 
             new Dex2jarCmd(new ObfuscatorConfiguration() {
                 @Override
-                protected int getObfDepth() {
+                public int getObfDepth() {
                     return depth;
                 }
 
                 @Override
-                protected boolean accept(String className, String methodName) {
+                public boolean accept(String className, String methodName) {
                     System.out.println("BlackObf Class: " + className + "#" + methodName);
                     return super.accept(className, methodName);
                 }
