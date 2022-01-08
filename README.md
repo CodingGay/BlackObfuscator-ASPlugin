@@ -55,8 +55,10 @@ BlackObfuscator {
     enabled true
     // 混淆深度
     depth 2
-    // 需要混淆的类(匹配前面一段)
+    // 需要混淆的包或者类(匹配前面一段)
     obfClass = ["top.niunaijun", "com.abc"]
+    // blackClass中的包或者类不会进行混淆(匹配前面一段)
+    blackClass = ["top.niunaijun.black"]
 }
 
 dependencies {
