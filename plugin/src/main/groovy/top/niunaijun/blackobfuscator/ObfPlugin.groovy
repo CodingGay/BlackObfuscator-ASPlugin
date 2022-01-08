@@ -34,7 +34,7 @@ public class ObfPlugin implements Plugin<Project> {
                     task.getOutputs().getFiles().collect().each() { element ->
                         def file = new File(element.toString())
                         ObfDex.obf(file.getAbsolutePath(),
-                                sObfuscatorExtension.depth, sObfuscatorExtension.obfClass)
+                                sObfuscatorExtension.depth, sObfuscatorExtension.obfClass, sObfuscatorExtension.blackClass)
                     }
                 }
             }

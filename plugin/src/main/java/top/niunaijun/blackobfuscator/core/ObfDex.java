@@ -19,7 +19,7 @@ import top.niunaijun.obfuscator.ObfuscatorConfiguration;
  * 此处无Bug
  */
 public class ObfDex {
-    public static void obf(String dir, int depth, String[] obfClass) {
+    public static void obf(String dir, int depth, String[] obfClass, String[] blackClass) {
         File file = new File(dir);
         if (file.isDirectory()) {
             File[] files = file.listFiles();
@@ -27,17 +27,17 @@ public class ObfDex {
                 return;
             for (File input : files) {
                 if (input.isFile()) {
-                    handleDex(input, depth, obfClass);
+                    handleDex(input, depth, obfClass, blackClass);
                 } else {
-                    obf(input.getAbsolutePath(), depth, obfClass);
+                    obf(input.getAbsolutePath(), depth, obfClass, blackClass);
                 }
             }
         } else {
-            handleDex(file, depth, obfClass);
+            handleDex(file, depth, obfClass, blackClass);
         }
     }
 
-    private static void handleDex(File input, int depth, String[] obfClass) {
+    private static void handleDex(File input, int depth, String[] obfClass, String[] blackClass) {
         if (!input.getAbsolutePath().endsWith(".dex"))
             return;
         File tempJar = null;
@@ -47,7 +47,7 @@ public class ObfDex {
             tempJar = new File(input.getParent(), System.currentTimeMillis() + "obf" + input.getName() + ".jar");
             splitDex = new File(input.getParent(), System.currentTimeMillis() + "split" + input.getName() + ".dex");
             obfDex = new File(input.getParent(), System.currentTimeMillis() + "obf" + input.getName() + ".dex");
-            long l = DexLib2Utils.splitDex(input, splitDex, Arrays.asList(obfClass));
+            long l = DexLib2Utils.splitDex(input, splitDex, Arrays.asList(obfClass), Arrays.asList(blackClass));
             if (l <= 0) {
                 System.out.println("Obfuscator Class not found");
                 return;
