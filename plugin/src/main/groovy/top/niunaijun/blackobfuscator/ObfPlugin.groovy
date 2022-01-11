@@ -1,6 +1,7 @@
 package top.niunaijun.blackobfuscator
 
 import com.android.build.gradle.AppExtension
+import com.android.build.gradle.internal.dsl.BuildType
 import com.android.build.gradle.internal.dsl.ProductFlavor
 import com.android.build.gradle.internal.tasks.DexMergingTask
 import org.gradle.api.*
@@ -49,23 +50,23 @@ public class ObfPlugin implements Plugin<Project> {
             addTask("minifyDebugWithR8", tasks)
 
             if (android != null) {
+                android.buildTypes.all(new Action<BuildType>() {
+                    @Override
+                    void execute(BuildType buildType) {
+                        def name = upperCaseFirst(buildType.name)
+                        def names = [buildType.name, name]
+                        for (String p : names) {
+                            addOtherTask(p)
+                        }
+                    }
+                })
                 android.productFlavors.all(new Action<ProductFlavor>() {
                     @Override
                     void execute(ProductFlavor productFlavor) {
-                        println("ProductFlavor: " + name)
                         def name = upperCaseFirst(productFlavor.name)
                         def names = [productFlavor.name, name]
                         for (String p : names) {
-                            addTask("mergeDex${p}Release", tasks)
-                            addTask("mergeDex${p}Debug", tasks)
-                            addTask("mergeLibDex${p}Debug", tasks)
-                            addTask("mergeProjectDex${p}Debug", tasks)
-
-                            addTask("transformDexArchiveWithDexMergerFor${p}Debug", tasks)
-                            addTask("transformDexArchiveWithDexMergerFor${p}Release", tasks)
-
-                            addTask("minify${p}ReleaseWithR8", tasks)
-                            addTask("minify${p}DebugWithR8", tasks)
+                            addOtherTask(p)
                         }
                     }
                 })
@@ -80,6 +81,19 @@ public class ObfPlugin implements Plugin<Project> {
         }
     }
 
+    private void addOtherTask(String name) {
+        addTask("mergeDex${name}Release", tasks)
+        addTask("mergeDex${name}Debug", tasks)
+        addTask("mergeLibDex${name}Debug", tasks)
+        addTask("mergeProjectDex${name}Debug", tasks)
+
+        addTask("transformDexArchiveWithDexMergerFor${name}Debug", tasks)
+        addTask("transformDexArchiveWithDexMergerFor${name}Release", tasks)
+
+        addTask("minify${name}ReleaseWithR8", tasks)
+        addTask("minify${name}DebugWithR8", tasks)
+    }
+
     private String upperCaseFirst(String val) {
         char[] arr = val.toCharArray();
         arr[0] = Character.toUpperCase(arr[0]);
@@ -89,8 +103,11 @@ public class ObfPlugin implements Plugin<Project> {
     private void addTask(String name, List<Task> tasks) {
         try {
             //Protected code
-            tasks.add(mProject.tasks.getByName(name))
-            println("add Task $name")
+            Task task = mProject.tasks.getByName(name)
+            if (!tasks.contains(task)) {
+                tasks.add(task)
+                println("add Task $name")
+            }
         } catch(UnknownTaskException e1) {
             //Catch block
         }
