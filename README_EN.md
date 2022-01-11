@@ -1,24 +1,20 @@
-# DEX控制流混淆插件版 · BlackObfuscator-ASPlugin
-
-**[English Version](README_EN.md)**
+# DexFile Control Flow Flattening · BlackObfuscator-ASPlugin
 
 ![](https://img.shields.io/badge/language-java-brightgreen.svg)
 
-本项目为 [BlackObfuscator](https://github.com/CodingGay/BlackObfuscator) 的Android Studio插件版，支持打包自动化混淆。功能及介绍方面请查看 [BlackObfuscator](https://github.com/CodingGay/BlackObfuscator) 源项目
+This project is an Android Studio plugin version of [BlackObfuscator](https://github.com/CodingGay/BlackObfuscator), it supports obfuscating code automatically. More information about this project are in [BlackObfuscator](https://github.com/CodingGay/BlackObfuscator).
 
-## 注意事项
-- 首要注意：[BlackObfuscator](https://github.com/CodingGay/BlackObfuscator) 内的注意事项
-- 若打包报错或者无效请提供classpath中gradle的版本供我测试
+## Matters Need Attention
 
-## 使用方式
+- Please check the information of [BlackObfuscator](https://github.com/CodingGay/BlackObfuscator).
+- If you got errors in building, please provide the the gradle version of classpath for me.
 
-### 准备
+## Usage
 
-#### Step 1. 根目录Gradle文件加入
+#### Step 1. Configure your build.gradle (in top level directory)
 ```gradle
 repositories {
     ...
-    // 加入仓库
     maven { url 'https://jitpack.io' }
 }
 dependencies {
@@ -26,22 +22,22 @@ dependencies {
     classpath "com.github.CodingGay:BlackObfuscator-ASPlugin:3.2"
 }
 ```
-#### Step 2. app模块加入plugin
+#### Step 2. Apply the plugin in your app module
 ```gradle
 ...
 apply plugin: 'com.android.application'
-// 加入
+// Add
 apply plugin: 'top.niunaijun.blackobfuscator'
 ```
-或者你的是这样的
+or you can do it like this
 ```gradle
 plugins {
     id 'com.android.application'
-    // 加入
+    // Add
     id 'top.niunaijun.blackobfuscator'
 }
 ```
-#### Step 3. 添加混淆配置
+#### Step 3. Add configuration in your build.gradle (Module: app)
 ```gradle
 android {
     ...
@@ -51,15 +47,15 @@ android {
     }
 }
 
-// 加入混淆配置
+// Configuration
 BlackObfuscator {
-    // 是否启用
+    // Enabled state
     enabled true
-    // 混淆深度
+    // Obfuscation depth
     depth 2
-    // 需要混淆的包或者类(匹配前面一段)
+    // The classes which need to be obfuscated
     obfClass = ["top.niunaijun", "com.abc"]
-    // blackClass中的包或者类不会进行混淆(匹配前面一段)
+    // It will not obfuscate the classes that in blackClass
     blackClass = ["top.niunaijun.black"]
 }
 
@@ -67,7 +63,7 @@ dependencies {
     ...
 }
 ```
-#### Step 4. Clean一次项目，打包即可自动混淆
+#### Step 4. Clean your project, it will obfuscate code automatically while you are building project
 
 
 ### License
