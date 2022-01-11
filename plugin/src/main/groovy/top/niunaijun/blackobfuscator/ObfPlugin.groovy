@@ -56,7 +56,7 @@ public class ObfPlugin implements Plugin<Project> {
                         def name = upperCaseFirst(buildType.name)
                         def names = [buildType.name, name]
                         for (String p : names) {
-                            addOtherTask(p)
+                            addOtherTask(tasks, p)
                         }
                     }
                 })
@@ -66,7 +66,7 @@ public class ObfPlugin implements Plugin<Project> {
                         def name = upperCaseFirst(productFlavor.name)
                         def names = [productFlavor.name, name]
                         for (String p : names) {
-                            addOtherTask(p)
+                            addOtherTask(tasks, p)
                         }
                     }
                 })
@@ -81,7 +81,7 @@ public class ObfPlugin implements Plugin<Project> {
         }
     }
 
-    private void addOtherTask(String name) {
+    private void addOtherTask(List<Task> tasks, String name) {
         addTask("mergeDex${name}Release", tasks)
         addTask("mergeDex${name}Debug", tasks)
         addTask("mergeLibDex${name}Debug", tasks)
