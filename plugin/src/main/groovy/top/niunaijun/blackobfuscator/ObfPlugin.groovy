@@ -52,6 +52,7 @@ public class ObfPlugin implements Plugin<Project> {
                 android.productFlavors.all(new Action<ProductFlavor>() {
                     @Override
                     void execute(ProductFlavor productFlavor) {
+                        println("ProductFlavor: " + name)
                         def name = upperCaseFirst(productFlavor.name)
                         def names = [productFlavor.name, name]
                         for (String p : names) {
