@@ -61,16 +61,6 @@ public class ObfPlugin implements Plugin<Project> {
                         }
                     }
                 })
-                android.buildTypes.all(new Action<BuildType>() {
-                    @Override
-                    void execute(BuildType buildType) {
-                        def name = upperCaseFirst(buildType.name)
-                        def names = [buildType.name, name]
-                        for (String p : names) {
-                            addOtherTask(tasks, p)
-                        }
-                    }
-                })
                 android.productFlavors.all(new Action<ProductFlavor>() {
                     @Override
                     void execute(ProductFlavor productFlavor) {
@@ -95,14 +85,28 @@ public class ObfPlugin implements Plugin<Project> {
     private void addOtherTask(List<Task> tasks, String name) {
         addTask("mergeDex${name}Release", tasks)
         addTask("mergeDex${name}Debug", tasks)
+        addTask("mergeDex${name}", tasks)
+        addTask("mergeDexApp${name}", tasks)
+
         addTask("mergeLibDex${name}Debug", tasks)
+        addTask("mergeLibDex${name}", tasks)
+        addTask("mergeLibDexApp${name}", tasks)
         addTask("mergeProjectDex${name}Debug", tasks)
+        addTask("mergeProjectDex${name}", tasks)
+        addTask("mergeProjectDexApp${name}", tasks)
 
         addTask("transformDexArchiveWithDexMergerFor${name}Debug", tasks)
         addTask("transformDexArchiveWithDexMergerFor${name}Release", tasks)
+        addTask("transformDexArchiveWithDexMergerFor${name}", tasks)
+        addTask("transformDexArchiveWithDexMergerForApp${name}", tasks)
 
         addTask("minify${name}ReleaseWithR8", tasks)
+        addTask("minify${name}WithR8", tasks)
+        addTask("minifyApp${name}WithR8", tasks)
+
         addTask("minify${name}DebugWithR8", tasks)
+        addTask("minify${name}WithR8", tasks)
+        addTask("minifyApp${name}WithR8", tasks)
     }
 
     private String upperCaseFirst(String val) {

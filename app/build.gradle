@@ -1,6 +1,6 @@
 plugins {
     id 'com.android.application'
-//    id 'top.niunaijun.blackobfuscator'
+    id 'top.niunaijun.blackobfuscator'
 }
 
 android {
@@ -14,6 +14,7 @@ android {
         versionCode 1
         versionName "1.0"
 
+        flavorDimensions "default"
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
     }
 
@@ -22,17 +23,34 @@ android {
             minifyEnabled false
             proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
         }
+
+        debug {
+            minifyEnabled false
+            proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
+        }
+
+        googleplay {
+            minifyEnabled false
+            proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
+        }
     }
-    compileOptions {
+
+    productFlavors {
+        app {
+            applicationId "com.ghosthing.ball"
+        }
+
+    }
+        compileOptions {
         sourceCompatibility JavaVersion.VERSION_1_8
         targetCompatibility JavaVersion.VERSION_1_8
     }
 }
 
-//BlackObfuscator {
-//    enabled true
-//    obfClass = ["MainActivity", "com.bbb"]
-//}
+BlackObfuscator {
+    enabled true
+    obfClass = ["MainActivity", "com.bbb"]
+}
 
 dependencies {
 

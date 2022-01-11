@@ -27,7 +27,7 @@
     <dependency>
       <groupId>com.github.CodingGay.BlackObfuscator</groupId>
       <artifactId>dex-tools</artifactId>
-      <version>1.0.3</version>
+      <version>2.1</version>
       <scope>runtime</scope>
     </dependency>
   </dependencies>
