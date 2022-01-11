@@ -1,6 +1,7 @@
 package top.niunaijun.blackobfuscator
 
 import com.android.build.gradle.AppExtension
+import com.android.build.gradle.api.ApplicationVariant
 import com.android.build.gradle.internal.dsl.BuildType
 import com.android.build.gradle.internal.dsl.ProductFlavor
 import com.android.build.gradle.internal.tasks.DexMergingTask
@@ -50,6 +51,16 @@ public class ObfPlugin implements Plugin<Project> {
             addTask("minifyDebugWithR8", tasks)
 
             if (android != null) {
+                android.applicationVariants.all(new Action<ApplicationVariant>() {
+                    @Override
+                    void execute(ApplicationVariant applicationVariant) {
+                        def name = upperCaseFirst(applicationVariant.buildType.name)
+                        def names = [applicationVariant.buildType.name, name]
+                        for (String p : names) {
+                            addOtherTask(tasks, p)
+                        }
+                    }
+                })
                 android.buildTypes.all(new Action<BuildType>() {
                     @Override
                     void execute(BuildType buildType) {
