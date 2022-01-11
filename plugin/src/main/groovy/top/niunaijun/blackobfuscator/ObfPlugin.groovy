@@ -118,6 +118,7 @@ public class ObfPlugin implements Plugin<Project> {
     private void addTask(String name, List<Task> tasks) {
         try {
             //Protected code
+            println("task $name")
             Task task = mProject.tasks.getByName(name)
             if (!tasks.contains(task)) {
                 tasks.add(task)
