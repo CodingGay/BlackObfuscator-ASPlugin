@@ -40,6 +40,7 @@ public class ObfPlugin implements Plugin<Project> {
             }
             List<Task> tasks = new ArrayList<>()
             addTask("mergeDexRelease", tasks)
+            addTask("mergeDexDebug", tasks)
             addTask("mergeLibDexDebug", tasks)
             addTask("mergeProjectDexDebug", tasks)
             addTask("transformDexArchiveWithDexMergerForDebug", tasks)
@@ -55,6 +56,7 @@ public class ObfPlugin implements Plugin<Project> {
                         def names = [productFlavor.name, name]
                         for (String p : names) {
                             addTask("mergeDex${p}Release", tasks)
+                            addTask("mergeDex${p}Debug", tasks)
                             addTask("mergeLibDex${p}Debug", tasks)
                             addTask("mergeProjectDex${p}Debug", tasks)
 
