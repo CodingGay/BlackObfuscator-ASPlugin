@@ -51,6 +51,7 @@ public class ObfPlugin implements Plugin<Project> {
             addTask("minifyDebugWithR8", tasks)
 
             List<String> buildTypes = new ArrayList<>()
+            List<String> productFlavors = new ArrayList<>()
             if (android != null) {
                 android.applicationVariants.all(new Action<ApplicationVariant>() {
                     @Override
@@ -63,11 +64,16 @@ public class ObfPlugin implements Plugin<Project> {
                     @Override
                     void execute(ProductFlavor productFlavor) {
                         def name = upperCaseFirst(productFlavor.name)
-                        for (String buildType : buildTypes) {
-                            addOtherTask(tasks, name, buildType)
-                        }
+                        productFlavors.add(name)
                     }
                 })
+            }
+
+            for (String buildType : buildTypes) {
+                for (String product : productFlavors) {
+                    addOtherTask(tasks, product, buildType)
+                }
+                addOtherTask(tasks, "", buildType)
             }
 
             for (Task task : tasks) {
