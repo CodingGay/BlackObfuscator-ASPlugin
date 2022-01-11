@@ -50,24 +50,21 @@ public class ObfPlugin implements Plugin<Project> {
             addTask("minifyReleaseWithR8", tasks)
             addTask("minifyDebugWithR8", tasks)
 
+            List<String> buildTypes = new ArrayList<>()
             if (android != null) {
                 android.applicationVariants.all(new Action<ApplicationVariant>() {
                     @Override
                     void execute(ApplicationVariant applicationVariant) {
                         def name = upperCaseFirst(applicationVariant.buildType.name)
-                        def names = [applicationVariant.buildType.name, name]
-                        for (String p : names) {
-                            addOtherTask(tasks, p)
-                        }
+                        buildTypes.add(name)
                     }
                 })
                 android.productFlavors.all(new Action<ProductFlavor>() {
                     @Override
                     void execute(ProductFlavor productFlavor) {
                         def name = upperCaseFirst(productFlavor.name)
-                        def names = [productFlavor.name, name]
-                        for (String p : names) {
-                            addOtherTask(tasks, p)
+                        for (String buildType : buildTypes) {
+                            addOtherTask(tasks, name, buildType)
                         }
                     }
                 })
@@ -82,31 +79,12 @@ public class ObfPlugin implements Plugin<Project> {
         }
     }
 
-    private void addOtherTask(List<Task> tasks, String name) {
-        addTask("mergeDex${name}Release", tasks)
-        addTask("mergeDex${name}Debug", tasks)
-        addTask("mergeDex${name}", tasks)
-        addTask("mergeDexApp${name}", tasks)
-
-        addTask("mergeLibDex${name}Debug", tasks)
-        addTask("mergeLibDex${name}", tasks)
-        addTask("mergeLibDexApp${name}", tasks)
-        addTask("mergeProjectDex${name}Debug", tasks)
-        addTask("mergeProjectDex${name}", tasks)
-        addTask("mergeProjectDexApp${name}", tasks)
-
-        addTask("transformDexArchiveWithDexMergerFor${name}Debug", tasks)
-        addTask("transformDexArchiveWithDexMergerFor${name}Release", tasks)
-        addTask("transformDexArchiveWithDexMergerFor${name}", tasks)
-        addTask("transformDexArchiveWithDexMergerForApp${name}", tasks)
-
-        addTask("minify${name}ReleaseWithR8", tasks)
-        addTask("minify${name}WithR8", tasks)
-        addTask("minifyApp${name}WithR8", tasks)
-
-        addTask("minify${name}DebugWithR8", tasks)
-        addTask("minify${name}WithR8", tasks)
-        addTask("minifyApp${name}WithR8", tasks)
+    private void addOtherTask(List<Task> tasks, String name, String buildType) {
+        addTask("mergeDex${name}${buildType}", tasks)
+        addTask("mergeLibDex${name}${buildType}", tasks)
+        addTask("mergeProjectDex${name}${buildType}", tasks)
+        addTask("transformDexArchiveWithDexMergerFor${name}${buildType}", tasks)
+        addTask("minify${name}${buildType}WithR8", tasks)
     }
 
     private String upperCaseFirst(String val) {
