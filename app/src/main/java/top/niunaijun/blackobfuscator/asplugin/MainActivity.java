@@ -16,5 +16,6 @@ public class MainActivity extends AppCompatActivity {
         } else {
             Log.d("123", "onCreate: aax1xaaa");
         }
+        Log.d("123", "onCreate: " + Abx.go());
     }
 }
