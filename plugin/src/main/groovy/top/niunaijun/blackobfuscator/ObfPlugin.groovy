@@ -100,7 +100,9 @@ public class ObfPlugin implements Plugin<Project> {
             Task task = mProject.tasks.getByName(name)
             if (!tasks.contains(task)) {
                 tasks.add(task)
-                mTaskMapping.put(task.name, mappingFile.absolutePath)
+                if (mappingFile != null) {
+                    mTaskMapping.put(task.name, mappingFile.absolutePath)
+                }
                 println("add Task $name")
             }
         } catch(UnknownTaskException e1) {
