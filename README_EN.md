@@ -7,7 +7,7 @@ This project is an Android Studio plugin version of [BlackObfuscator](https://gi
 ## Matters Need Attention
 
 - Please check the information of [BlackObfuscator](https://github.com/CodingGay/BlackObfuscator).
-- If you got errors in building, please provide the the gradle version of classpath for me.
+- If you got errors in building, please provide the the ``` ./gradlew tasks --all ``` output for me.
 
 ## Usage
 
