@@ -58,9 +58,10 @@ public class ObfPlugin implements Plugin<Project> {
                         def buildType = upperCaseFirst(applicationVariant.buildType.name)
                         boolean empty = true
                         for (ReadOnlyProductFlavor flavor : applicationVariant.productFlavors) {
-                            def flavorName = upperCaseFirst(flavor.name)
+                            def flavorName = upperCaseFirst(applicationVariant.flavorName)
                             addOtherTask(tasks, flavorName, buildType, mappingFile)
                             empty = false
+                            break
                         }
                         if (empty) {
                             addOtherTask(tasks, "", buildType, mappingFile)
