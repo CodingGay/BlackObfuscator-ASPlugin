@@ -69,7 +69,8 @@ public class ObfDex {
 
             TrieTree blackListTree = new TrieTree();
             blackListTree.addAll(blackClassList);
-            for (String aClass : blackClassList) {
+            List<String> tmpBlackClass = new ArrayList<>(blackClassList);
+            for (String aClass : tmpBlackClass) {
                 if (blackListTree.search(aClass)) {
                     String orig = mapping.get(aClass);
                     if (orig != null) {
