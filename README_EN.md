@@ -19,7 +19,7 @@ repositories {
 }
 dependencies {
     ...
-    classpath "com.github.CodingGay:BlackObfuscator-ASPlugin:3.6"
+    classpath "com.github.CodingGay:BlackObfuscator-ASPlugin:3.7"
 }
 ```
 #### Step 2. Apply the plugin in your app module
