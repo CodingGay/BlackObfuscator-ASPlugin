@@ -5,6 +5,7 @@ import com.wonson.Operator;
 import org.jf.DexLib2Utils;
 import org.jf.util.TrieTree;
 import java.io.File;
+import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -82,9 +83,12 @@ public class ObfDex {
                 System.out.println("Obfuscator Class not found");
                 return;
             }
-            // 使用dex2jar 将.dex转换成.class(.jar)
-            // 具体就是把 splitDex->tempJar
-            new Dex2jarCmd(new ObfuscatorConfiguration() {
+
+            // 实例化混淆配置
+            ObfuscatorConfiguration obfuscatorConfiguration = new ObfuscatorConfiguration() {
+                private int depth;
+                private boolean accept;
+
                 @Override
                 public int getObfDepth() {
                     return depth;
@@ -92,13 +96,29 @@ public class ObfDex {
 
                 @Override
                 public boolean accept(String className, String methodName) {
-                    System.out.println("BlackObf Class: " + className + "#" + methodName);
-                    return super.accept(className, methodName);
+                    if(accept) System.out.println("BlackObf Class: " + className + "#" + methodName);
+                    return accept;
                 }
-            }).doMain("-f", splitDex.getAbsolutePath(), "-o", tempJar.getAbsolutePath());
-            // 字符串混淆 string->byte[] 异或 + Base64 异或因子随机 内联解密以防hook
+
+                public void setAccept(boolean accept) {
+                    this.accept = accept;
+                }
+
+                public void setDepth(int depth){
+                    this.depth = depth;
+                }
+            };
+            Class<? extends ObfuscatorConfiguration> obfuscatorConfigurationClass = obfuscatorConfiguration.getClass();
+            Method setDepth = obfuscatorConfigurationClass.getDeclaredMethod("setDepth", int.class);
+            Method setAccept = obfuscatorConfigurationClass.getDeclaredMethod("setAccept", boolean.class);
+            // 控制流混淆
+            setDepth.invoke(obfuscatorConfiguration,depth);
+            setAccept.invoke(obfuscatorConfiguration,true);
+            new Dex2jarCmd(obfuscatorConfiguration).doMain("-f", splitDex.getAbsolutePath(), "-o", tempJar.getAbsolutePath());
+            // 字符串加密
             Operator.run(tempJar,new_tempJar,true);
             new Jar2Dex().doMain("-f", "-o", obfDex.getAbsolutePath(), new_tempJar.getAbsolutePath());
+            // 合并
             DexLib2Utils.mergerAndCoverDexFile(input, obfDex, input);
         } catch (Throwable t) {
             t.printStackTrace();
