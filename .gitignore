@@ -25,3 +25,4 @@ app/.DS_Store
 .idea/*
 gradle/.DS_Store
 build/
+localRepo/
