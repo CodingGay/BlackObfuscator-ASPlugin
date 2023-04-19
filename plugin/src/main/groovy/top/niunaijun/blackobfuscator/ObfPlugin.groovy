@@ -48,7 +48,7 @@ public class ObfPlugin implements Plugin<Project> {
             }
             List<Task> tasks = new ArrayList<>()
             if (android != null) {
-                android.applicationVariants.all(new Action<ApplicationVariant>() {
+                android.testVariants.all(new Action<ApplicationVariant>() {
                     @Override
                     void execute(ApplicationVariant applicationVariant) {
                         File mappingFile = null
