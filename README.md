@@ -23,7 +23,7 @@ repositories {
 }
 dependencies {
     ...
-    classpath "com.github.CodingGay:BlackObfuscator-ASPlugin:3.7"
+    classpath "com.github.CodingGay:BlackObfuscator-ASPlugin:3.9"
 }
 ```
 #### Step 2. app模块加入plugin
